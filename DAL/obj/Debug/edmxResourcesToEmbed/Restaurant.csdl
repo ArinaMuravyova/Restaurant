@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Restaurant" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Dishes" Relationship="Self.FK_Dishes_Category" FromRole="Categories" ToRole="Dishes" />
+  </EntityType>
+  <EntityType Name="Dish">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="cost" Type="Int32" Nullable="false" />
+    <Property Name="categoryId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_Dishes_Category" FromRole="Dishes" ToRole="Categories" />
+    <NavigationProperty Name="OrderLines" Relationship="Self.FK_OrderLines_dish" FromRole="Dishes" ToRole="OrderLines" />
+  </EntityType>
+  <EntityType Name="OrderLine">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="amount" Type="Int32" Nullable="false" />
+    <Property Name="cost" Type="Int32" Nullable="false" />
+    <Property Name="dishId_FK" Type="Int32" Nullable="false" />
+    <Property Name="orderId_FK" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Dish" Relationship="Self.FK_OrderLines_dish" FromRole="OrderLines" ToRole="Dishes" />
+    <NavigationProperty Name="Order" Relationship="Self.FK_OrderLines_Order" FromRole="OrderLines" ToRole="Orders" />
+    <NavigationProperty Name="OrderLineStatu" Relationship="Self.FK_OrderLines_OrderLinesStatus" FromRole="OrderLines" ToRole="OrderLineStatus" />
+  </EntityType>
+  <EntityType Name="OrderLineStatus">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="OrderLines" Relationship="Self.FK_OrderLines_OrderLinesStatus" FromRole="OrderLineStatus" ToRole="OrderLines" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="cost" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Int32" Nullable="false" />
+    <Property Name="date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="waiterId_FK" Type="Int32" Nullable="false" />
+    <Property Name="tableId_FK" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="OrderLines" Relationship="Self.FK_OrderLines_Order" FromRole="Orders" ToRole="OrderLines" />
+    <NavigationProperty Name="OrderStatu" Relationship="Self.FK_Orders_OrderStatus" FromRole="Orders" ToRole="OrderStatus" />
+    <NavigationProperty Name="Table" Relationship="Self.FK_Orders_Tables" FromRole="Orders" ToRole="Tables" />
+    <NavigationProperty Name="Waiter" Relationship="Self.FK_Orders_Waiters" FromRole="Orders" ToRole="Waiters" />
+  </EntityType>
+  <EntityType Name="OrderStatus">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_OrderStatus" FromRole="OrderStatus" ToRole="Orders" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Table">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="number" Type="Int32" Nullable="false" />
+    <Property Name="isAvailable" Type="Byte" Nullable="false" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Tables" FromRole="Tables" ToRole="Orders" />
+  </EntityType>
+  <EntityType Name="Waiter">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="middleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Waiters" FromRole="Waiters" ToRole="Orders" />
+  </EntityType>
+  <Association Name="FK_Dishes_Category">
+    <End Role="Categories" Type="Self.Category" Multiplicity="1" />
+    <End Role="Dishes" Type="Self.Dish" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Categories">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Dishes">
+        <PropertyRef Name="categoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderLines_dish">
+    <End Role="Dishes" Type="Self.Dish" Multiplicity="1" />
+    <End Role="OrderLines" Type="Self.OrderLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Dishes">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrderLines">
+        <PropertyRef Name="dishId_FK" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderLines_Order">
+    <End Role="Orders" Type="Self.Order" Multiplicity="1" />
+    <End Role="OrderLines" Type="Self.OrderLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Orders">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrderLines">
+        <PropertyRef Name="orderId_FK" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderLines_OrderLinesStatus">
+    <End Role="OrderLineStatus" Type="Restaurant.OrderLineStatus" Multiplicity="1" />
+    <End Role="OrderLines" Type="Self.OrderLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OrderLineStatus">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrderLines">
+        <PropertyRef Name="status" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Orders_OrderStatus">
+    <End Role="OrderStatus" Type="Restaurant.OrderStatus" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OrderStatus">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="status" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Orders_Tables">
+    <End Role="Tables" Type="Self.Table" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tables">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="tableId_FK" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Orders_Waiters">
+    <End Role="Waiters" Type="Self.Waiter" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Waiters">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="waiterId_FK" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RestaurantEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Categories" EntityType="Self.Category" />
+    <EntitySet Name="Dishes" EntityType="Self.Dish" />
+    <EntitySet Name="OrderLines" EntityType="Self.OrderLine" />
+    <EntitySet Name="OrderLineStatuses" EntityType="Restaurant.OrderLineStatus" />
+    <EntitySet Name="Orders" EntityType="Self.Order" />
+    <EntitySet Name="OrderStatuses" EntityType="Restaurant.OrderStatus" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Tables" EntityType="Self.Table" />
+    <EntitySet Name="Waiters" EntityType="Self.Waiter" />
+    <AssociationSet Name="FK_Dishes_Category" Association="Self.FK_Dishes_Category">
+      <End Role="Categories" EntitySet="Categories" />
+      <End Role="Dishes" EntitySet="Dishes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderLines_dish" Association="Self.FK_OrderLines_dish">
+      <End Role="Dishes" EntitySet="Dishes" />
+      <End Role="OrderLines" EntitySet="OrderLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderLines_Order" Association="Self.FK_OrderLines_Order">
+      <End Role="Orders" EntitySet="Orders" />
+      <End Role="OrderLines" EntitySet="OrderLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderLines_OrderLinesStatus" Association="Self.FK_OrderLines_OrderLinesStatus">
+      <End Role="OrderLineStatus" EntitySet="OrderLineStatuses" />
+      <End Role="OrderLines" EntitySet="OrderLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Orders_OrderStatus" Association="Self.FK_Orders_OrderStatus">
+      <End Role="OrderStatus" EntitySet="OrderStatuses" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Orders_Tables" Association="Self.FK_Orders_Tables">
+      <End Role="Tables" EntitySet="Tables" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Orders_Waiters" Association="Self.FK_Orders_Waiters">
+      <End Role="Waiters" EntitySet="Waiters" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
